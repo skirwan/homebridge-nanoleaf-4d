@@ -1,11 +1,10 @@
 import type { API } from 'homebridge';
-
-import { ExampleHomebridgePlatform } from './platform.js';
+import { Nanoleaf4DPlatform } from './platform.js';
 import { PLATFORM_NAME } from './settings.js';
 
 /**
- * This method registers the platform with Homebridge
+ * Register the Nanoleaf4DPlatform with Homebridge.
  */
 export default (api: API) => {
-  api.registerPlatform(PLATFORM_NAME, ExampleHomebridgePlatform);
+  api.registerPlatform(PLATFORM_NAME, Nanoleaf4DPlatform);
 };
