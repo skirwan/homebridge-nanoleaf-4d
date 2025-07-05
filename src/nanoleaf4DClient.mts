@@ -14,7 +14,7 @@ export interface MirroringStateChangeListener {
 
 export class Nanoleaf4DClient {
   async *instanceList(): AsyncGenerator<Nanoleaf4DInstance[]> {
-    const bus = await ssdp()
+    const bus = await ssdp();
 
     try {
       bus.on('error', console.error);
@@ -37,7 +37,7 @@ export class Nanoleaf4DClient {
               label: `Nanoleaf ${details.modelNumber} (${details.serialNumber})`,
               model: details.modelNumber,
               ip: url.hostname,
-              port: parseInt(url.port, 10) || 80
+              port: parseInt(url.port, 10) || 80,
             }];
           }
         }
@@ -53,14 +53,15 @@ export class Nanoleaf4DClient {
   }
 
   async setMirroring(instanceId: string, on: boolean): Promise<void> {
-
+    console.log('setMMirroring called with', instanceId, on);
   }
 
   async getMirroringState(instanceId: string): Promise<boolean> {
+    console.log('getMirroringState called with', instanceId);
     return false;
   }
 
   onMirroringStateChanged(listener: MirroringStateChangeListener): void {
-    // No-op
+    console.log('onMirroringStateChanged called', listener);
   }
 }

@@ -1,6 +1,4 @@
 import type { API, Characteristic, DynamicPlatformPlugin, Logging, PlatformAccessory, PlatformConfig, Service } from 'homebridge';
-import { PLATFORM_NAME, PLUGIN_NAME } from './settings.js';
-import { Nanoleaf4dAccessory } from './nanoleaf4dAccessory.mjs';
 import { Nanoleaf4DClient } from './nanoleaf4DClient.mjs';
 
 /**
