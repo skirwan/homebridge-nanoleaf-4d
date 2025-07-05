@@ -3,14 +3,46 @@
   "pluginType": "platform",
   "singular": true,
   "strictValidation": false,
+  "customUi": true,
   "schema": {
     "type": "object",
     "properties": {
-      "name": {
-        "title": "Name",
-        "type": "string",
-        "required": true,
-        "default": "Nanoleaf 4D"
+      "devices": {
+        "title": "Known Devices",
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "serial": {
+              "type": "string",
+              "required": true
+            },
+            "model": {
+              "type": "string"
+            },
+            "token": {
+              "type": "string",
+              "required": true
+            },
+            "label": {
+              "type": "string",
+              "required": true
+            },
+            "seen": {
+              "type": "string",
+              "required": true
+            },
+            "host": {
+              "type": "string"
+            },
+            "ip": {
+              "type": "string"
+            },
+            "port": {
+              "type": "number"
+            }
+          }
+        }
       }
     }
   }

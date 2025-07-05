@@ -1,5 +1,5 @@
 import type { API } from 'homebridge';
-import { Nanoleaf4DPlatform } from './platform.js';
+import { Nanoleaf4DPlatform } from './platform.mjs';
 import { PLATFORM_NAME } from './settings.js';
 
 /**

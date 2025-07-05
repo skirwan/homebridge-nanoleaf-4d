@@ -1,6 +1,6 @@
 import type { CharacteristicValue, PlatformAccessory, Service } from 'homebridge';
-import type { Nanoleaf4DPlatform } from './platform.js';
-import type { Nanoleaf4DClient } from './nanoleaf4DClient.js';
+import type { Nanoleaf4DPlatform } from './platform.mjs';
+import type { Nanoleaf4DClient } from './nanoleaf4DClient.mjs';
 
 /**
  * Represents the HomeKit switch accessory for controlling screen mirroring on a
@@ -34,7 +34,7 @@ export class Nanoleaf4dAccessory {
       .onGet(this.handleGetOn.bind(this));
 
     // Listen for updates from client
-    this.client.onMirroringStateChanged((id, state) => {
+    this.client.onMirroringStateChanged((id: string, state: boolean) => {
       if (id === this.instanceId) {
         this.platform.log.debug(`Update from device ${id}: ${state}`);
         this.service.updateCharacteristic(this.platform.Characteristic.On, state);

@@ -1,7 +1,6 @@
 {
   "name": "homebridge-nanoleaf-4d",
   "displayName": "Nanoleaf 4D",
-  "type": "module",
   "version": "1.0.0",
   "private": true,
   "description": "Control Nanoleaf 4D screen mirroring via HomeKit.",
@@ -30,6 +29,8 @@
     "watch": "npm run build && npm link && nodemon"
   },
   "dependencies": {
+    "@achingbrain/ssdp": "^4.2.4",
+    "@homebridge/plugin-ui-utils": "^2.1.0",
     "homebridge-lib": "^7.1.4"
   },
   "devDependencies": {
