@@ -35,9 +35,6 @@
             "host": {
               "type": "string"
             },
-            "ip": {
-              "type": "string"
-            },
             "port": {
               "type": "number"
             }

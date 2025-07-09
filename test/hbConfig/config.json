@@ -7,8 +7,8 @@
     },
     "description": "HomeBridge HTTP Status Control",
     "plugins": [
-        "homebridge-plugin-name",
-        "homebridge-config-ui-x"
+        "homebridge-config-ui-x",
+        "homebridge-nanoleaf-4d"
     ],
     "platforms": [
         {
@@ -21,17 +21,18 @@
             "platform": "config"
         },
         {
+            "name": "homebridge-nanoleaf-4d",
+            "platform": "Nanoleaf4DPlatform",
             "devices": [
                 {
+                    "host": "4D-DA11.local",
                     "serial": "S23241D7634",
-                    "token": "7tWPt1Mx7f8ZlQOcL7R6fPpJtOsROPuC",
-                    "label": "Master TV Ambient Light",
-                    "seen": "-1",
-                    "ip": "10.0.1.112",
-                    "port": 16021
+                    "label": "Master Bedroom TV Ambilight",
+                    "model": "NL69",
+                    "port": 16021,
+                    "token": "BfWja9rZK6LWCGhIGDyeWvQ85NuDZ24p"
                 }
-            ],
-            "platform": "Nanoleaf4DPlatform"
+            ]
         }
     ],
     "accessories": []

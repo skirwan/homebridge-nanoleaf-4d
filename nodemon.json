@@ -5,7 +5,7 @@
   ],
   "ext": "ts,mts,js,html",
   "ignore": [],
-  "exec": "tsc && homebridge -U ./test/hbConfig -D",
+  "exec": "tsc && homebridge -U ./test/hbConfig -D -I",
   "signal": "SIGTERM",
   "env": {
     "NODE_OPTIONS": "--trace-warnings"

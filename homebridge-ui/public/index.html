@@ -1,18 +1,58 @@
-<p>To Pair a device, hold the power button down for 5-6 seconds to put it in pairing mode, and then click the 'pair'
-    button below.</p>
+<style>
+    .btn-sm {
+        padding: .25rem .5rem;
+        font-size: .875rem;
+        border-radius: .25rem;
+    }
+    .btn-sm + .btn-sm {
+        margin-left: 10px;
+    }
+</style>
+<div id="configuration-block" class="d-none">
+    <table class="table table-sm">
+        <thead>
+            <tr>
+                <th>Label</th>
+                <th>Color</th>
+                <th>Mirroring</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody id="configuration-table">
+            <!-- Instances will be populated here -->
+        </tbody>
+    </table>
+</div>
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>Label</th>
-            <th>Model</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody id="instance-list">
-        <!-- Instances will be populated here -->
-    </tbody>
-</table>
+<div id="pairing-search-block" class="text-center">
+    <p>Searching for devices&hellip;</p>
+    <div class="spinner-border" role="status">
+        <span class="visually-hidden">Loading...</span>
+    </div>
+</div>
+
+<div id="pairing-block" class="d-none">
+    <h3>Unpaired Devices</h3>
+    <p>For Homebridge to control a Nanoleaf device, it must be paired with the device.  Place the device into pairing mode and then click the 'pair' button below.</p>
+    <div id="pairing-instructions">
+        <p>To place a device into pairing mode, either:</p>
+        <ul>
+            <li>Hold the power button on the device for 5-6 seconds.</li>
+            <li>Use the Nanoleaf app to enable pairing mode.</li>
+        </ul>
+    </div>
+    <table class="table table-sm">
+        <thead>
+            <tr>
+                <th>Model</th>
+                <th>Address</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody id="pairing-table"></tbody>
+    </table>
+</div>
+
 <script>
     document.write(`<script src="client-side.js?v=${Date.now()}"><\/script>`);
 </script>
