@@ -140,17 +140,4 @@ export class Nanoleaf4DClient {
       });
     }
   }
-
-  async setMirroring(instanceId: string, on: boolean): Promise<void> {
-    console.log('setMMirroring called with', instanceId, on);
-  }
-
-  async getMirroringState(instanceId: string): Promise<boolean> {
-    console.log('getMirroringState called with', instanceId);
-    return false;
-  }
-
-  onMirroringStateChanged(listener: MirroringStateChangeListener): void {
-    console.log('onMirroringStateChanged called', listener);
-  }
 }
