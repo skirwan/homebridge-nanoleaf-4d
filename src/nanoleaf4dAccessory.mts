@@ -6,11 +6,11 @@ import { createEventSource } from 'eventsource-client';
 
 const EMERSION_MODES = {
   codeToLabel: {
-    6: "1D", 2: "2D", 3: "3D", 5: "4D", 0: 'OFF'
+    6: '1D', 2: '2D', 3: '3D', 5: '4D', 0: 'OFF',
   },
   labelToCode: {
-    "1D": 6, "2D": 2, "3D": 3, "4D": 5, "OFF": 0
-  }
+    '1D': 6, '2D': 2, '3D': 3, '4D': 5, 'OFF': 0,
+  },
 } as const;
 type EMERSION_LABEL = keyof typeof EMERSION_MODES.labelToCode;
 type EMERSION_CODE = keyof typeof EMERSION_MODES.codeToLabel;
@@ -32,14 +32,14 @@ export class Nanoleaf4dAccessory {
   constructor(
     private readonly platform: Nanoleaf4DPlatform,
     private readonly accessory: PlatformAccessory<PairedNanoleaf4DInstance>,
-    private readonly client: Nanoleaf4DClient
+    private readonly client: Nanoleaf4DClient,
   ) {
     // Set accessory information
     this.accessory.getService(this.platform.Service.AccessoryInformation)!
       .setCharacteristic(this.platform.Characteristic.Manufacturer, 'Nanoleaf')
       .setCharacteristic(this.platform.Characteristic.Model, accessory.context.model)
       .setCharacteristic(this.platform.Characteristic.SerialNumber, accessory.context.serial)
-      .setCharacteristic(this.platform.Characteristic.FirmwareRevision, accessory.context.firmwareRevision)
+      .setCharacteristic(this.platform.Characteristic.FirmwareRevision, accessory.context.firmwareRevision);
 
     // Create or get switch service
     this.service = this.accessory.getService(this.platform.Service.Switch)
@@ -64,17 +64,21 @@ export class Nanoleaf4dAccessory {
     const { host, port, token } = this.accessory.context;
     const es = createEventSource({
       url: `http://${host}:${port}/api/v1/${token}/events?id=3`,
-    })
+    });
 
     for await (const evt of es) {
-      if (evt.id != '3') { continue }
+      // eslint-disable-next-line eqeqeq
+      if (evt.id != '3') {
+        continue; 
+      }
       try {
         const fields = JSON.parse(evt.data) as Event3Payload;
         if (fields.events?.length === 1) {
+          // eslint-disable-next-line eqeqeq
           if (fields.events[0].attr == 1) {
             if (fields.events[0].value === '*Emersion*') {
               this.service.updateCharacteristic(this.platform.Characteristic.On, true);
-            } else if (!!fields.events[0].value) {
+            } else if (fields.events[0].value) {
               this.service.updateCharacteristic(this.platform.Characteristic.On, false);
             }
           }
@@ -90,7 +94,7 @@ export class Nanoleaf4dAccessory {
   }
 
   private async handleSetOn(value: CharacteristicValue): Promise<void> {
-    if (!!value) {
+    if (value) {
       await this.setEmersionMode('4D');
     } else {
       await this.solidColorOn();
@@ -102,7 +106,7 @@ export class Nanoleaf4dAccessory {
     return currentEffect === '*Emersion*';
   }
 
-  private async req(path: string, method: string, body: unknown = undefined): Promise<any | undefined> {
+  private async req(path: string, method: string, body: unknown = undefined): Promise<unknown | undefined> {
     const req: RequestInit = { method };
     if (body) {
       req.headers = {
@@ -128,14 +132,15 @@ export class Nanoleaf4dAccessory {
   }
 
   async getEmersionMode() {
-    const q = await this.req('effects', 'PUT', { "write": { "command": "getScreenMirrorMode" } });
+    const q = await this.req('effects', 'PUT', { 'write': { 'command': 'getScreenMirrorMode' } });
 
-    return EMERSION_MODES.codeToLabel[q.screenMirrorMode as EMERSION_CODE];
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    return EMERSION_MODES.codeToLabel[(q as any).screenMirrorMode as EMERSION_CODE];
   };
 
   async setEmersionMode(mode: EMERSION_LABEL) {
     const emersion_int = EMERSION_MODES.labelToCode[mode as EMERSION_LABEL];
-    await this.req('effects', 'PUT', { "write": { "command": "activateScreenMirror", "screenMirrorMode": emersion_int } });
+    await this.req('effects', 'PUT', { 'write': { 'command': 'activateScreenMirror', 'screenMirrorMode': emersion_int } });
   };
 
   async solidColorOn() {

@@ -17,21 +17,23 @@ export type PairResponse = {
 
 export function reverseMdns(ip: string, timeout = 2000): Promise<string | undefined> {
   const sock = dgram.createSocket({ type: 'udp4', reuseAddr: true });
-  let ipSpec = ip.split('.').reverse().join('.') + '.in-addr.arpa';
+  const ipSpec = ip.split('.').reverse().join('.') + '.in-addr.arpa';
   const q = dnsPacket.encode({
     type: 'query',
     id: 0,
-    questions: [{ type: 'PTR', name: ipSpec, class: 'IN' }]
+    questions: [{ type: 'PTR', name: ipSpec, class: 'IN' }],
   });
 
   return new Promise((res, rej) => {
-    const done = () => { sock.close(); res(undefined); };
+    const done = () => {
+      sock.close(); res(undefined); 
+    };
     const timer = setTimeout(done, timeout);
 
     sock
       .on('message', msg => {
         const pkt = dnsPacket.decode(msg);
-        for (const a of pkt.answers ?? [])
+        for (const a of pkt.answers ?? []) {
           if (a.type === 'PTR' && typeof a.data === 'string') {
             if (a.name === ipSpec) {
               clearTimeout(timer);
@@ -39,6 +41,7 @@ export function reverseMdns(ip: string, timeout = 2000): Promise<string | undefi
               res(a.data);
             }
           }
+        }
       })
       .on('error', err => {
         clearTimeout(timer);
@@ -100,7 +103,7 @@ export class Nanoleaf4DClient {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({})
+      body: JSON.stringify({}),
     });
 
     if (pairResponse.ok) {
@@ -108,7 +111,7 @@ export class Nanoleaf4DClient {
       return { success: true, token: data.auth_token };
     } else {
       if (pairResponse.status === 403) {
-        return { success: false, errorMessage: "Please ensure this device is in pairing mode." };
+        return { success: false, errorMessage: 'Please ensure this device is in pairing mode.' };
       }
 
       const error = await pairResponse.text();

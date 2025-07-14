@@ -1,4 +1,4 @@
-import type { API, Characteristic, DynamicPlatformPlugin, Logging, PlatformAccessory, PlatformConfig, Service } from 'homebridge';
+import type { API, Characteristic, DynamicPlatformPlugin, Logging, PlatformAccessory, Service } from 'homebridge';
 import { Nanoleaf4DClient } from './nanoleaf4DClient.mjs';
 import { Nanoleaf4DPlatformConfig, PairedNanoleaf4DInstance } from './configuration-types.js';
 import { Nanoleaf4dAccessory } from './nanoleaf4dAccessory.mjs';
@@ -27,7 +27,7 @@ export class Nanoleaf4DPlatform implements DynamicPlatformPlugin {
     this.Characteristic = api.hap.Characteristic;
 
     this.api.on('didFinishLaunching', () => {
-      this.log('Finished launching, creating devices that have no be loaded from cache...')
+      this.log('Finished launching, creating devices that have no be loaded from cache...');
       // At this point, all cached accessories should be in the accessories map
       config.devices.forEach((device) => {
         if (!this.accessories.has(device.serial)) {
@@ -38,16 +38,17 @@ export class Nanoleaf4DPlatform implements DynamicPlatformPlugin {
           this.accessories.set(device.serial, new Nanoleaf4dAccessory(this, accessory, this.client));
           this.api.registerPlatformAccessories(PLUGIN_NAME, PLATFORM_NAME, [accessory]);
         }
-      })
+      });
     });
   }
 
   configureAccessory(accessory: PlatformAccessory) {
     this.log.info('Loading accessory from cache:', accessory.displayName);
+    // eslint-disable-next-line @typescript-eslint/no-use-before-define
     if (isPairedNanoleaf4DInstance(accessory.context)) {
       this.accessories.set(
         accessory.context.serial,
-        new Nanoleaf4dAccessory(this, accessory as PlatformAccessory<PairedNanoleaf4DInstance>, this.client)
+        new Nanoleaf4dAccessory(this, accessory as PlatformAccessory<PairedNanoleaf4DInstance>, this.client),
       );
     } else {
       this.log.info('Accessory context doesn\'t contain config, deleting.');
@@ -57,10 +58,16 @@ export class Nanoleaf4DPlatform implements DynamicPlatformPlugin {
 }
 
 function isPairedNanoleaf4DInstance(x: unknown): x is PairedNanoleaf4DInstance {
-  const q: Partial<PairedNanoleaf4DInstance> = x as any;
+  const q = x as Partial<PairedNanoleaf4DInstance>;
 
-  if (!q.host) { return false; }
-  if (!q.port) { return false; }
-  if (!q.token) { return false; }
+  if (!q.host) {
+    return false; 
+  }
+  if (!q.port) {
+    return false; 
+  }
+  if (!q.token) {
+    return false; 
+  }
   return true;
 }
