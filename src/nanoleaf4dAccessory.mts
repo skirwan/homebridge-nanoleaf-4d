@@ -2,6 +2,7 @@ import type { CharacteristicValue, PlatformAccessory, Service } from 'homebridge
 import type { Nanoleaf4DPlatform } from './platform.mjs';
 import type { Nanoleaf4DClient } from './nanoleaf4DClient.mjs';
 import { PairedNanoleaf4DInstance } from './configuration-types.js';
+import { createEventSource } from 'eventsource-client';
 
 const EMERSION_MODES = {
   codeToLabel: {
@@ -13,6 +14,13 @@ const EMERSION_MODES = {
 } as const;
 type EMERSION_LABEL = keyof typeof EMERSION_MODES.labelToCode;
 type EMERSION_CODE = keyof typeof EMERSION_MODES.codeToLabel;
+
+type Event3Payload = {
+  events?: Array<{
+    attr?: number;
+    value?: string;
+  }>;
+};
 
 /**
  * Represents the HomeKit switch accessory for controlling screen mirroring on a
@@ -30,7 +38,8 @@ export class Nanoleaf4dAccessory {
     this.accessory.getService(this.platform.Service.AccessoryInformation)!
       .setCharacteristic(this.platform.Characteristic.Manufacturer, 'Nanoleaf')
       .setCharacteristic(this.platform.Characteristic.Model, accessory.context.model)
-      .setCharacteristic(this.platform.Characteristic.SerialNumber, accessory.context.serial);
+      .setCharacteristic(this.platform.Characteristic.SerialNumber, accessory.context.serial)
+      .setCharacteristic(this.platform.Characteristic.FirmwareRevision, accessory.context.firmwareRevision)
 
     // Create or get switch service
     this.service = this.accessory.getService(this.platform.Service.Switch)
@@ -44,29 +53,53 @@ export class Nanoleaf4dAccessory {
       .onSet(this.handleSetOn.bind(this))
       .onGet(this.handleGetOn.bind(this));
 
-    // Listen for updates from client
-    this.client.onMirroringStateChanged((id: string, state: boolean) => {
-      if (id === accessory.context.serial) {
-        this.platform.log.debug(`Update from device ${id}: ${state}`);
-        this.service.updateCharacteristic(this.platform.Characteristic.On, state);
+    setTimeout(this.listenForEvents.bind(this));
+  }
+
+  private async listenForEvents() {
+    const x = await this.req('', 'GET');
+    console.log('******');
+    console.log(x);
+    console.log('******');
+    const { host, port, token } = this.accessory.context;
+    const es = createEventSource({
+      url: `http://${host}:${port}/api/v1/${token}/events?id=3`,
+    })
+
+    for await (const evt of es) {
+      if (evt.id != '3') { continue }
+      try {
+        const fields = JSON.parse(evt.data) as Event3Payload;
+        if (fields.events?.length === 1) {
+          if (fields.events[0].attr == 1) {
+            if (fields.events[0].value === '*Emersion*') {
+              this.service.updateCharacteristic(this.platform.Characteristic.On, true);
+            } else if (!!fields.events[0].value) {
+              this.service.updateCharacteristic(this.platform.Characteristic.On, false);
+            }
+          }
+        }
+      } catch (err) {
+        this.platform.log('Error handling Nanoleaf SSE event:', err, evt);
       }
+    }
+
+    this.platform.api.on('shutdown', () => {
+      es.close();
     });
   }
 
-  private async handleSetOn(value: CharacteristicValue) {
-    this.platform.log(`Calling handleSetOn: (${value})`)
-    const on = value as boolean;
+  private async handleSetOn(value: CharacteristicValue): Promise<void> {
     if (!!value) {
-      this.setEmersionMode('4D');
+      await this.setEmersionMode('4D');
     } else {
-      this.setEmersionMode('OFF');
-      this.solidColorOn();
+      await this.solidColorOn();
     }
   }
 
   private async handleGetOn(): Promise<CharacteristicValue> {
-    const mode = await this.getEmersionMode();
-    return mode !== 'OFF';
+    const currentEffect = await this.req('effects/select', 'GET');
+    return currentEffect === '*Emersion*';
   }
 
   private async req(path: string, method: string, body: unknown = undefined): Promise<any | undefined> {
@@ -106,7 +139,6 @@ export class Nanoleaf4dAccessory {
   };
 
   async solidColorOn() {
-    await this.req('state', 'PUT', { ct: { value: 2722 } });
+    return this.req('state', 'PUT', { ...this.accessory.context.color });
   }
-
 }

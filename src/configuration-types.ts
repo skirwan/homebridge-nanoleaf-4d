@@ -4,6 +4,17 @@ export interface Nanoleaf4DInstance {
   model: string;
   host: string;
   port: number;
+  mirroringMode: '1D' | '2D' | '3D' | '4D';
+  color: {
+    colorMode: 'ct';
+    ct: { value: number }
+  } | {
+    colorMode: 'hs';
+    hue: { value: number };
+    sat: { value: number };
+    brightness: { value: number };
+  };
+  firmwareRevision: string;
 }
 
 export type PairedNanoleaf4DInstance = Nanoleaf4DInstance & {

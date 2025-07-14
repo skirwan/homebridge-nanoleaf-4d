@@ -1,6 +1,6 @@
 {
     "bridge": {
-        "name": "PluginTemplate",
+        "name": "Nanoleaf4DHomebridgeTestHarness",
         "username": "AA:BB:CC:DD:EE:FF",
         "port": 51826,
         "pin": "031-45-154"
@@ -21,18 +21,30 @@
             "platform": "config"
         },
         {
-            "name": "homebridge-nanoleaf-4d",
-            "platform": "Nanoleaf4DPlatform",
             "devices": [
                 {
-                    "host": "4D-DA11.local",
                     "serial": "S23241D7634",
-                    "label": "Master Bedroom TV Ambilight",
                     "model": "NL69",
+                    "token": "BfWja9rZK6LWCGhIGDyeWvQ85NuDZ24p",
+                    "label": "Master Bedroom TV Ambilight",
+                    "host": "4D-DA11.local",
                     "port": 16021,
-                    "token": "BfWja9rZK6LWCGhIGDyeWvQ85NuDZ24p"
+                    "mirroringMode": "4D",
+                    "color": {
+                        "colorMode": "hs",
+                        "hue": {
+                            "value": 107
+                        },
+                        "sat": {
+                            "value": 70
+                        },
+                        "brightness": {
+                            "value": 100
+                        }
+                    }
                 }
-            ]
+            ],
+            "platform": "Nanoleaf4DPlatform"
         }
     ],
     "accessories": []

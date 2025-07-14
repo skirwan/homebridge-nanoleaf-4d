@@ -81,6 +81,9 @@ export class Nanoleaf4DClient {
               label: `Nanoleaf ${details.modelNumber} (${details.serialNumber})`,
               model: details.modelNumber,
               port: parseInt(url.port, 10) || 80,
+              mirroringMode: '4D',
+              color: { colorMode: 'ct', ct: { value: 2722 } },
+              firmwareRevision: details.firmwareVersion,
             }];
           }
         }

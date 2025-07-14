@@ -28,15 +28,83 @@
               "type": "string",
               "required": true
             },
-            "seen": {
+            "host": {
               "type": "string",
               "required": true
             },
-            "host": {
-              "type": "string"
-            },
             "port": {
-              "type": "number"
+              "type": "number",
+              "required": true
+            },
+            "mirroringMode": {
+              "type": "string",
+              "enum": ["1D", "2D", "3D", "4D"]
+            },
+            "color": {
+              "type": "object",
+              "oneOf": [{
+                "type": "object",
+                "required": true,
+                "properties": {
+                  "colorMode": {
+                    "type": "string",
+                    "enum": ["ct"],
+                    "required": true
+                  },
+                  "ct": {
+                    "type": "object",
+                    "required": true,
+                    "properties": {
+                      "value": {
+                        "type": "number",
+                        "required": true
+                      }
+                    }
+                  }
+                }
+              }, {
+                "type": "object",
+                "properties": {
+                  "colorMode": {
+                    "type": "string",
+                    "enum": ["hs"],
+                    "required": true
+                  },
+                  "hue": {
+                    "type": "object",
+                    "required": true,
+                    "properties": {
+                      "value": {
+                        "type": "number",
+                        "required": true
+                      }
+                    }
+                  },
+                  "sat": {
+                    "type": "object",
+                    "required": true,
+                    "properties": {
+                      "value": {
+                        "type": "number",
+                        "required": true
+                      }
+                    }
+                  },
+                  "brightness": {
+                    "type": "object",
+                    "required": true,
+                    "properties": {
+                      "value": {
+                        "type": "number",
+                        "required": true
+                      }
+                    }
+                  }
+                }
+              }]
+            },
+            "firmwareRevision": {
+              "type": "string"
             }
           }
         }
