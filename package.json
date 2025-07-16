@@ -6,13 +6,13 @@
   "description": "Control Nanoleaf 4D screen mirroring via HomeKit.",
   "author": "Your Name",
   "license": "Apache-2.0",
-  "homepage": "https://github.com/USERNAME/GITHUB_PROJECT_NAME#readme",
+  "homepage": "https://github.com/skirwan/homebridge-nanoleaf-4d#readme",
   "repository": {
     "type": "git",
-    "url": "https://github.com/USERNAME/GITHUB_PROJECT_NAME.git"
+    "url": "https://github.com/skirwan/homebridge-nanoleaf-4d.git"
   },
   "bugs": {
-    "url": "https://github.com/USERNAME/GITHUB_PROJECT_NAME/issues"
+    "url": "https://github.com/skirwan/homebridge-nanoleaf-4d/issues"
   },
   "keywords": [
     "homebridge-plugin"
