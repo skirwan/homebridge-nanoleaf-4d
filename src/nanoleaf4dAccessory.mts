@@ -117,7 +117,14 @@ export class Nanoleaf4dAccessory {
     }
 
     const { host, port, token } = this.accessory.context;
-    const response = await fetch(`http://${host}:${port}/api/v1/${token}/${path}`, req);
+    let response: Response;
+    try {
+      response = await fetch(`http://${host}:${port}/api/v1/${token}/${path}`, req);
+    } catch (err) {
+      const msg = `Network error calling accessory at ${host}:${port}`;
+      this.platform.log(msg, err);
+      throw new Error(`${msg}: ${err instanceof Error ? err.message : String(err)}`);
+    }
 
     if (!response.ok) {
       const msg = `Error response calling accessory: (${response.status}) ${await response.text()}`;

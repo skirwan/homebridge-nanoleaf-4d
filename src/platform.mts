@@ -10,7 +10,7 @@ import { PLATFORM_NAME, PLUGIN_NAME } from './settings.js';
  * Nanoleaf 4D instance.
  */
 export class Nanoleaf4DPlatform implements DynamicPlatformPlugin {
-  private readonly client: Nanoleaf4DClient = new Nanoleaf4DClient();
+  private readonly client: Nanoleaf4DClient;
   public readonly Service: typeof Service;
   public readonly Characteristic: typeof Characteristic;
 
@@ -22,6 +22,7 @@ export class Nanoleaf4DPlatform implements DynamicPlatformPlugin {
     public readonly config: Nanoleaf4DPlatformConfig,
     public readonly api: API,
   ) {
+    this.client = new Nanoleaf4DClient(this.log.error.bind(this.log));
     this.log('Starting Nanoleaf4DPlatform');
     this.Service = api.hap.Service;
     this.Characteristic = api.hap.Characteristic;
