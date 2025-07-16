@@ -57,6 +57,7 @@ export function reverseMdns(ip: string, timeout = 2000): Promise<string | undefi
 }
 
 export class Nanoleaf4DClient {
+  constructor(private readonly log: (...args: any[]) => void = console.error) {}
   async *instanceList(): AsyncGenerator<Nanoleaf4DInstance[]> {
     const bus = await ssdp();
 
@@ -73,7 +74,13 @@ export class Nanoleaf4DClient {
 
           const detailsURL = new URL('device_info', url);
           detailsURL.port = '80';
-          const data = await fetch(detailsURL);
+          let data: Response;
+          try {
+            data = await fetch(detailsURL);
+          } catch (err) {
+            this.log('Error fetching device details:', err);
+            continue;
+          }
           if (data.ok) {
             const details = await data.json();
             console.log('Device details: ', { fqdn, details });
@@ -98,13 +105,19 @@ export class Nanoleaf4DClient {
   }
 
   async pair(host: string, port: number): Promise<PairResponse> {
-    const pairResponse = await fetch(`http://${host}:${port}/api/v1/new`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({}),
-    });
+    let pairResponse: Response;
+    try {
+      pairResponse = await fetch(`http://${host}:${port}/api/v1/new`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({}),
+      });
+    } catch (err) {
+      this.log('Pairing request failed:', err);
+      return { success: false, errorMessage: String(err) };
+    }
 
     if (pairResponse.ok) {
       const data = await pairResponse.json();
@@ -115,7 +128,7 @@ export class Nanoleaf4DClient {
       }
 
       const error = await pairResponse.text();
-      console.log({
+      this.log('Pairing error details', {
         error,
         status: pairResponse.status,
         statusText: pairResponse.statusText,
@@ -126,9 +139,15 @@ export class Nanoleaf4DClient {
   }
 
   async identify(host: string, port: number, token: string): Promise<void> {
-    const result = await fetch(`http://${host}:${port}/api/v1/${token}/identify`, {
-      method: 'PUT',
-    });
+    let result: Response;
+    try {
+      result = await fetch(`http://${host}:${port}/api/v1/${token}/identify`, {
+        method: 'PUT',
+      });
+    } catch (err) {
+      this.log('Identify request failed:', err);
+      throw err;
+    }
 
     if (result.ok) {
       console.log('Sent identify successfully');

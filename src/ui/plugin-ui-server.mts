@@ -3,7 +3,7 @@ import { Nanoleaf4DClient } from '../nanoleaf4DClient.mjs';
 import { Nanoleaf4DInstance, PairedNanoleaf4DInstance } from '../configuration-types.js';
 
 export class Nanoleaf4DPluginUiServer extends HomebridgePluginUiServer {
-  private readonly client = new Nanoleaf4DClient();
+  private readonly client = new Nanoleaf4DClient(console.error);
     
   constructor() {
     super();
