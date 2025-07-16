@@ -66,6 +66,10 @@ export class Nanoleaf4dAccessory {
       url: `http://${host}:${port}/api/v1/${token}/events?id=3`,
     });
 
+    this.platform.api.on('shutdown', () => {
+      es.close();
+    });
+
     for await (const evt of es) {
       // eslint-disable-next-line eqeqeq
       if (evt.id != '3') {
@@ -88,9 +92,6 @@ export class Nanoleaf4dAccessory {
       }
     }
 
-    this.platform.api.on('shutdown', () => {
-      es.close();
-    });
   }
 
   private async handleSetOn(value: CharacteristicValue): Promise<void> {
